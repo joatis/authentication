@@ -1,7 +1,12 @@
 <?php
 
 use Slim\Slim;
+use Slim\Views\Twig;
+use Slim\Views\TwigExtension;
+
 use Noodlehaus\Config;
+
+use Joatis3\User\User;
 
 session_cache_limiter(false);
 session_start();
@@ -15,7 +20,9 @@ require INC_ROOT . '/vendor/autoload.php';
 
 $app = new Slim([
   // Some editors will append a newline so that's why the rtrim is here.
-  'mode' => rtrim(file_get_contents(INC_ROOT . '/mode.php'))
+  'mode' => rtrim(file_get_contents(INC_ROOT . '/mode.php')),
+  'view' => new Twig(),
+  'templates.path' => INC_ROOT . '\app\views'
 ]);
 
 
@@ -32,3 +39,18 @@ Require the database.php file because that is the file
 that will allow us to use Laravel's Eloquent Data models.
 */
 require 'database.php';
+require 'routes.php';
+
+$app->container->set('user', function() {
+  return new User;
+});
+
+$view = $app->view();
+
+$view->parserOptions = [
+  'debug' => $app->config->get('twig.debug')
+];
+
+$view->parserExtensions = [
+  new TwigExtension
+];
