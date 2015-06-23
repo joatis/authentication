@@ -7,6 +7,7 @@ use Slim\Views\TwigExtension;
 use Noodlehaus\Config;
 
 use Joatis3\User\User;
+use Joatis3\Helpers\Hash;
 
 session_cache_limiter(false);
 session_start();
@@ -43,6 +44,15 @@ require 'routes.php';
 
 $app->container->set('user', function() {
   return new User;
+});
+
+/*
+Load the Hash class as a singleton since it won't be changing.
+The Hash class gives us methods to create passwords, verify them, etc.
+and use the configuration options we set for them.
+*/
+$app->container->singleton('hash', function() use ($app){
+  return new Hash($app->config);
 });
 
 $view = $app->view();
