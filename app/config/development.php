@@ -11,6 +11,7 @@ return [
     'db' => [
         'driver' => 'mysql',
         'host'  => '127.0.0.1',
+        'name'  => 'site',
         'username' => 'site',
         'password' => 'root',
         'charset' => 'utf8',

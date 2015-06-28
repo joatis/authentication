@@ -8,6 +8,7 @@ use Noodlehaus\Config;
 
 use Joatis3\User\User;
 use Joatis3\Helpers\Hash;
+use Joatis3\Validation\Validator;
 
 session_cache_limiter(false);
 session_start();
@@ -53,6 +54,10 @@ and use the configuration options we set for them.
 */
 $app->container->singleton('hash', function() use ($app){
   return new Hash($app->config);
+});
+
+$app->container->singleton('validation', function() use ($app) {
+  return new Validator($app->user);
 });
 
 $view = $app->view();
