@@ -10,6 +10,8 @@ use Joatis3\User\User;
 use Joatis3\Helpers\Hash;
 use Joatis3\Validation\Validator;
 
+use Joatis3\Middleware\BeforeMiddleware;
+
 session_cache_limiter(false);
 session_start();
 
@@ -27,6 +29,10 @@ $app = new Slim([
   'templates.path' => INC_ROOT . '\app\views'
 ]);
 
+/*
+Register the middleware that will be executed before each request
+*/
+$app->add( new BeforeMiddleware);
 
 /*
 How to access configuration options
@@ -42,6 +48,8 @@ that will allow us to use Laravel's Eloquent Data models.
 */
 require 'database.php';
 require 'routes.php';
+
+$app->auth = false;
 
 $app->container->set('user', function() {
   return new User;
