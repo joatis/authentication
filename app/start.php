@@ -5,10 +5,13 @@ use Slim\Views\Twig;
 use Slim\Views\TwigExtension;
 
 use Noodlehaus\Config;
+use RandomLib\Factory as RandomLib;
 
 use Joatis3\User\User;
+use Joatis3\Mail\Mailer;
 use Joatis3\Helpers\Hash;
 use Joatis3\Validation\Validator;
+
 
 use Joatis3\Middleware\BeforeMiddleware;
 
@@ -64,8 +67,29 @@ $app->container->singleton('hash', function() use ($app){
   return new Hash($app->config);
 });
 
+$app->container->singleton('mail', function() use ($app){
+  $mailer = new PHPMailer;
+
+  $mailer->Host = $app->config->get('mail.host');
+  $mailer->SMTPAuth = $app->config->get('mail.smtp_auth');
+  $mailer->SMTPSecure = $app->config->get('mail.smtp_secure');
+  $mailer->Port = $app->config->get('mail.port');
+  $mailer->Username = $app->config->get('mail.username');
+  $mailer->Password = $app->config->get('mail.password');
+
+  $mailer->isHTML($app->config->get('mail.html'));
+  // $mailer->isSMTP();
+  // Return mailer object
+  return new Mailer($app->view, $mailer);
+});
+
 $app->container->singleton('validation', function() use ($app) {
   return new Validator($app->user);
+});
+
+$app->container->singleton('randomlib', function() {
+  $factory = new RandomLib;
+  return $factory->getMediumStrengthGenerator();
 });
 
 $view = $app->view();

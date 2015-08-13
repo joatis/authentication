@@ -27,7 +27,7 @@ return [
       'smtp_secure' => 'tls',
       'host' => 'smtp.gmail.com',
       'username' => 'joatis3@joatis3.com',
-      'password' => 'Password',
+      'password' => 'password',
       'port' => 587,
       'html' => true,
     ],

@@ -28,11 +28,24 @@ $app->post('/register', function() use ($app){
     *  Use the password function from our Hash class to hash the
     *  password.
     */
-    $app->user->create([
+    $user = $app->user->create([
       'email' => $email,
       'username' => $username,
       'password' => $app->hash->password($password)
     ]);
+
+    /*
+    * Send a Registrtation email
+    * Use a view as the content of the email.
+    * We can attach data in the array to use in the email
+    *
+    */
+    $app->mail->send('email/auth/registered.php', ['user' => $user], function($message) use ($user){
+      $message->to($user->email);
+      $message->subject('Thanks for registering.');
+    });
+
+
 
     /*
       Set a message to display to the user
